@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>icons/auto_fix_high_white_24dp.svg</file>
+    <file>icons/create_white_24dp.svg</file>
+    <file>icons/play_arrow_white_24dp.svg</file>
+    <file>icons/step_FILL0_wght400_GRAD0_opsz48.svg</file>
+    <file>icons/done_white_24dp.svg</file>
+  </qresource>
+</RCC>
