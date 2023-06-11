@@ -70,6 +70,26 @@ class DatabaseManager:
         return self.execute_query(query)
 
 
+def y(lambda_val, T):
+    '''
+    Безразмерная функция для расчёта закона Планка для абсолютно чёрного тела.
+
+    Параметры:
+    lambda_val (float): диапазон длин волн.
+    T (float): значение температуры.
+
+    Возвращаемое значение:
+    result: безразмерная характеристика.
+    '''
+    c2 = (6.62607015e-34 * 2.99792458e8) / 3.3805e-23
+    x = 4.9651 * ((lambda_val * T) / c2)
+    exponent = np.exp(4.9651 / x)
+    denominator = exponent - 1
+    result = 142.32 * x ** -5 * denominator ** -1
+
+    return result
+
+
 class GraphManager:
     def __init__(self, parent):
         self.parent = parent
@@ -93,12 +113,54 @@ class GraphManager:
             flux_value = float(self.parent.current_receiver.diag) + float(self.parent.current_receiver.diag)
             self.parent.ui.FluxValueOut.setText(str(flux_value))
 
+    def planck_wien(self, wav, T):
+        '''
+        Функция расчёта закона Планка для абсолютно чёрного тела.
+
+        Параметры:
+        wav (float): длина волны.
+        T (float): значение температуры.
+
+        Возвращаемое значение:
+        intensity (float): распределение интенсивности.
+        peak_wav (float): Пик интенсивности
+        '''
+        h = 6.62607015e-34
+        c = 2.99792458e8
+        k = 1.380649e-23
+
+        b = h * c / (wav * k * T)
+        intensity = (2.0 * h * c ** 2) / ((wav ** 5) * (np.exp(b) - 1.0))
+
+        # пиковая длина волны с использованием закона Вина
+        peak_wav = (2.897771955e-3) / T
+
+        return intensity, peak_wav
+
+    def plot3(self, fig):
+        wav_range = np.linspace(float(self.parent.ui.WaveStart.text()), float(self.parent.ui.WaveEnd.text()), 1000)
+        temperature = float(self.parent.ui.TargetTemp.text())
+
+        intensity, peak_wav = self.planck_wien(wav_range, temperature)
+        ax = fig.add_subplot(111)
+        ax.plot(wav_range, intensity)
+        ax.set_xlabel('длина волны')
+        ax.set_ylabel('Интенсивность')
+        ax.set_title('Закон Планка')
+        ax.grid(True)
+
+        # Add vertical line for the peak wavelength
+        ax.axvline(x=peak_wav, color='r', linestyle='--', label='Пиковая длина волны')
+        ax.legend()
+
     def display_selected_plot(self):
         selected_plot = self.parent.ui.PlotBox.currentText()
         if selected_plot == "график1":
             self.update_plot(self.plot1)
         elif selected_plot == "график2":
             self.update_plot(self.plot2)
+        elif selected_plot == "график3":
+            self.update_plot(self.plot3)
         self.plot_button_pressed = True
 
     def plot1(self, fig):
