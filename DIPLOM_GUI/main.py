@@ -62,9 +62,16 @@ class PyShine_LIVE_PLOT_APP(QtWidgets.QMainWindow):
 		self.Delta = 0.0
 		self.Power = 0.0
 
+		self.fig = Figure()
+		self.canvas = FigureCanvas(self.fig)
+		self.plot_layout = QVBoxLayout(self.ui.PlotPlace)
+		self.plot_layout.addWidget(self.canvas)
+
 		self.populate_receiver_list()
 		self.update_receiver_combo_box()
+
 		self.ui.ReceiverBox.currentTextChanged.connect(self.update_receiver_fields)
+
 		print(self.Diag)
 		self.ui.FluxValueOut.setText(str(self.Diag))
 		#print(self.Diag)
@@ -94,6 +101,22 @@ class PyShine_LIVE_PLOT_APP(QtWidgets.QMainWindow):
 
 		# Add the values from the receiver_list to the comboBox
 		self.ui.ReceiverBox.addItems(self.receiver_list)
+		self.update_plot()
+
+	def update_plot(self):
+		# Generate some sample data for the plot
+		x = np.linspace(0, 10, 100)
+		y = np.sin(x)
+
+		# Clear the previous plot
+		self.fig.clear()
+
+		# Create a new plot
+		ax = self.fig.add_subplot(111)
+		ax.plot(x, y)
+
+		# Refresh the canvas
+		self.canvas.draw()
 
 	def update_receiver_fields(self, selected_type):
 		# Create a connection to the SQLite database
@@ -125,6 +148,8 @@ class PyShine_LIVE_PLOT_APP(QtWidgets.QMainWindow):
 		# Close the cursor and connection
 		cursor.close()
 		conn.close()
+
+
 
 
 
