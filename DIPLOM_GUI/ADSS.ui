@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>944</width>
-    <height>755</height>
+    <width>912</width>
+    <height>788</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,46 +16,8 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="0" column="0">
-     <widget class="QGroupBox" name="">
+     <widget class="QGroupBox" name="groupBox">
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="1">
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Выбор фотоприемника</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="PlotBox"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QPushButton" name="Calculate">
-           <property name="text">
-            <string>Рассчитать параметры</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QPushButton" name="PlotGraph">
-           <property name="text">
-            <string>Построить график</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="ReceiverBox"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Выбор графика</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
        <item row="1" column="1">
         <widget class="QWidget" name="PlotPlace" native="true">
          <property name="sizePolicy">
@@ -139,10 +101,48 @@ border: 1px solid rgb(0, 0, 0);</string>
          </item>
         </layout>
        </item>
+       <item row="0" column="1">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Выбор фотоприемника</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="PlotBox"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QPushButton" name="Calculate">
+           <property name="text">
+            <string>Рассчитать параметры</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QPushButton" name="PlotGraph">
+           <property name="text">
+            <string>Построить график</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="ReceiverBox"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Выбор графика</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="1" column="0">
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="Monochromatic">
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="PowerOut">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -155,22 +155,22 @@ border: 1px solid rgb(0, 0, 0);</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_17">
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_20">
            <property name="text">
-            <string>Напряжение на выходе усилителя</string>
+            <string>Монохроматическая чувствительность</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
-          <widget class="QLineEdit" name="KPDRceiver">
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="Monochromatic">
            <property name="enabled">
             <bool>false</bool>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="PowerOut">
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="KPDRceiver">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -183,10 +183,10 @@ border: 1px solid rgb(0, 0, 0);</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_18">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_17">
            <property name="text">
-            <string>Фототок</string>
+            <string>Напряжение на выходе усилителя</string>
            </property>
           </widget>
          </item>
@@ -197,17 +197,17 @@ border: 1px solid rgb(0, 0, 0);</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_20">
-           <property name="text">
-            <string>Монохроматическая чувствительность</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="1">
           <widget class="QLineEdit" name="FluxOut">
            <property name="enabled">
             <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_18">
+           <property name="text">
+            <string>Фототок</string>
            </property>
           </widget>
          </item>
@@ -218,13 +218,6 @@ border: 1px solid rgb(0, 0, 0);</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_21">
-           <property name="text">
-            <string>КПД преобразователя</string>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="1">
           <widget class="QLineEdit" name="SummaryCurrent">
            <property name="enabled">
@@ -232,18 +225,12 @@ border: 1px solid rgb(0, 0, 0);</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_21">
+           <property name="text">
+            <string>КПД преобразователя</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+          </widget>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_16">
@@ -261,6 +248,19 @@ border: 1px solid rgb(0, 0, 0);</string>
             <size>
              <width>20</width>
              <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="3" column="2">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
             </size>
            </property>
           </spacer>

@@ -62,15 +62,23 @@ class PyShine_LIVE_PLOT_APP(QtWidgets.QMainWindow):
 		self.Delta = 0.0
 		self.Power = 0.0
 
+		# Create a Figure and a FigureCanvas
 		self.fig = Figure()
 		self.canvas = FigureCanvas(self.fig)
-		self.plot_layout = QVBoxLayout(self.ui.PlotPlace)
-		self.plot_layout.addWidget(self.canvas)
+
+		# Add the FigureCanvas to the PlotPlace widget
+		layout = QtWidgets.QVBoxLayout(self.ui.PlotPlace)
+		layout.addWidget(self.canvas)
+
 
 		self.populate_receiver_list()
 		self.update_receiver_combo_box()
+		self.populate_plot_list()
+		self.update_plot_combo_box()
 
 		self.ui.ReceiverBox.currentTextChanged.connect(self.update_receiver_fields)
+		# Connect the PlotGraph button signal to the method that displays the selected plot
+		self.ui.PlotGraph.clicked.connect(self.display_selected_plot)
 
 		print(self.Diag)
 		self.ui.FluxValueOut.setText(str(self.Diag))
@@ -104,12 +112,27 @@ class PyShine_LIVE_PLOT_APP(QtWidgets.QMainWindow):
 		self.update_plot()
 
 	def update_plot(self):
+		# Clear the previous plot
+		self.fig.clear()
+
 		# Generate some sample data for the plot
 		x = np.linspace(0, 10, 100)
 		y = np.sin(x)
 
+		# Create a new plot
+		ax = self.fig.add_subplot(111)
+		ax.plot(x, y)
+
+		# Refresh the canvas
+		self.canvas.draw()
+
+	def update_plot2(self):
 		# Clear the previous plot
 		self.fig.clear()
+
+		# Generate some sample data for the plot
+		x = np.linspace(0, 10, 100)
+		y = np.cos(x)
 
 		# Create a new plot
 		ax = self.fig.add_subplot(111)
@@ -144,6 +167,40 @@ class PyShine_LIVE_PLOT_APP(QtWidgets.QMainWindow):
 
 			# Update the corresponding line edits with the new values
 			self.ui.FluxValueOut.setText(str(self.Diag + self.Resist))
+
+		# Close the cursor and connection
+		cursor.close()
+		conn.close()
+
+	def display_selected_plot(self):
+		# Get the selected plot type from the comboBox
+		selected_plot = self.ui.PlotBox.currentText()
+
+		if selected_plot == "график1":
+			self.update_plot()
+		elif selected_plot == "график2":
+			self.update_plot2()
+
+	def update_plot_combo_box(self):
+		# Clear the existing items in the comboBox
+		self.ui.PlotBox.clear()
+
+		# Add the values from the plot_list to the comboBox
+		self.ui.PlotBox.addItems(self.plot_list)
+
+	def populate_plot_list(self):
+		# Create a connection to the SQLite database
+		conn = sqlite3.connect('DIPLOM.db')
+		cursor = conn.cursor()
+
+		# Fetch the values from the "Type" column of the "Plots" table
+		cursor.execute("SELECT type FROM Plots")
+		plot_data = cursor.fetchall()
+
+		# Append the values to the plot_list
+		for row in plot_data:
+			type_ = row[0]
+			self.plot_list.append(type_)
 
 		# Close the cursor and connection
 		cursor.close()
