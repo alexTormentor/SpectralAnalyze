@@ -1,6 +1,6 @@
 from Modules import sqlite3
 
-
+# Constructor Pattern
 class DatabaseManager:
     def __init__(self, database_name):
         self.database_name = database_name

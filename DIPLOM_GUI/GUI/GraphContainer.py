@@ -1,6 +1,6 @@
 from Modules import Figure, FigureCanvas, QtWidgets
 
-
+# Constructor Pattern
 class GraphContainer:
     def __init__(self, parent):
         self.parent = parent

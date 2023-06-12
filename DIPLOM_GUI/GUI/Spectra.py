@@ -4,7 +4,7 @@ from DatabaseManager import DatabaseManager
 from PlotData import PlotData
 from Receiver import Receiver
 
-
+# Constructor Pattern
 class Spectra(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)

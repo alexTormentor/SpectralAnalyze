@@ -2,6 +2,9 @@ from Modules import np
 from GraphContainer import GraphContainer
 from GraphCalculator import GraphCalculator
 
+# Constructor Pattern
+# Singleton Pattern
+# Observer Pattern
 class GraphManager:
     def __init__(self, parent):
         self.parent = parent
@@ -47,18 +50,6 @@ class GraphManager:
         self.graph_container.plot_button_pressed = True
 
     def plot1(self, fig):
-        x = np.linspace(0, 10, 100)
-        y = np.sin(x)
-        ax = fig.add_subplot(111)
-        ax.plot(x, y)
-
-    def plot2(self, fig):
-        x = np.linspace(0, 10, 100)
-        y = np.cos(x)
-        ax = fig.add_subplot(111)
-        ax.plot(x, y)
-
-    def plot3(self, fig):
         wav_range = np.linspace(float(self.parent.ui.WaveStart.text()), float(self.parent.ui.WaveEnd.text()), 1000)
         temperature = float(self.parent.ui.TargetTemp.text())
         intensity, peak_wav = self.graph_calculator.planck_wien(wav_range, temperature)
@@ -70,3 +61,41 @@ class GraphManager:
         ax.grid(True)
         ax.axvline(x=peak_wav, color='r', linestyle='--', label='Пиковая длина волны')
         ax.legend()
+
+    def plot2(self, fig):
+        wav_range = np.linspace(float(self.parent.ui.WaveStart.text()), float(self.parent.ui.WaveEnd.text()), 1000)
+        temps = np.linspace(float(self.parent.ui.TempStart.text()), float(self.parent.ui.TempEnd.text()), 7)  # Example temperatures
+        ax = fig.add_subplot(111)
+        for T in temps:
+            intensity, peak_wav = self.graph_calculator.planck_wien(wav_range, T)
+
+            ax.plot(wav_range, intensity, label=f'T = {T} K')
+
+            max_intensity = np.max(intensity)
+            max_wav = wav_range[np.argmax(intensity)]
+            ax.axhline(y=max_intensity, color='r', linestyle='--', alpha=0.5)
+            ax.axvline(x=max_wav, color='r', linestyle='--', alpha=0.5)
+
+            ax.plot([peak_wav], [max_intensity], 'bo')
+        ax.set_xlabel('длина волны')
+        ax.set_ylabel('интенсивность')
+        ax.set_title('закон Планка')
+        ax.grid(True)
+        ax.legend()
+
+    def plot3(self, fig):
+        wav_range = np.linspace(float(self.parent.ui.WaveStart.text()), float(self.parent.ui.WaveEnd.text()), 1000)
+        temps = np.linspace(float(self.parent.ui.TempStart.text()), float(self.parent.ui.TempEnd.text()), 7)
+        peak_wavs = [(1e-3) / T for T in temps]
+
+        ax = fig.add_subplot(111)
+        for i, temp in enumerate(temps):
+            spectrum = self.graph_calculator.spectral_density(wav_range, temp)
+            ax.plot(wav_range, spectrum, label=f'температура: {temp} K (Пик: {peak_wavs[i] * 1e6:.2f} мкм)')
+
+        ax.set_xlabel('длина волны')
+        ax.set_ylabel('Спектральная плотность')
+        ax.set_title('Спектральная плотность энергетической светимости абсолютно черного тела')
+        ax.grid(True)
+        ax.legend()
+
