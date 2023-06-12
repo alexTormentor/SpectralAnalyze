@@ -110,8 +110,34 @@ class GraphManager:
             (receiver for receiver in self.parent.receiver_list if receiver.type == selected_type), None
         )
         if self.parent.current_receiver:
-            flux_value = float(self.parent.current_receiver.diag) + float(self.parent.current_receiver.diag)
-            self.parent.ui.FluxValueOut.setText(str(flux_value))
+            self.calculate_radiance()
+
+    def y(self, lambda_val, T):
+        '''
+        Безразмерная функция для расчёта закона Планка для абсолютно чёрного тела.
+
+        Параметры:
+        lambda_val (float): диапазон длин волн.
+        T (float): значение температуры.
+
+        Возвращаемое значение:
+        result: безразмерная характеристика.
+        '''
+        c2 = (6.62607015e-34 * 2.99792458e8) / 3.3805e-23
+        x = 4.9651 * ((lambda_val * T) / c2)
+        exponent = np.exp(4.9651 / x)
+        denominator = exponent - 1
+        result = 142.32 * x ** -5 * denominator ** -1
+
+        return result
+
+    def calculate_radiance(self):
+        wavelength = float(self.parent.ui.TargetWave.text())
+        temperature = float(self.parent.ui.TargetTemp.text())
+
+        radiance = self.y(wavelength, temperature)
+        self.parent.ui.FluxValueOut.setText(str(radiance))
+
 
     def planck_wien(self, wav, T):
         '''
@@ -198,6 +224,7 @@ class PyShineLivePlotApp(QtWidgets.QMainWindow):
 
         self.ui.ReceiverBox.currentTextChanged.connect(self.graph_manager.update_receiver_fields)
         self.ui.PlotGraph.clicked.connect(self.graph_manager.display_selected_plot)
+        self.ui.Calculate.clicked.connect(self.graph_manager.calculate_radiance)
 
     def populate_receiver_list(self):
         db_manager = DatabaseManager('DIPLOM.db')

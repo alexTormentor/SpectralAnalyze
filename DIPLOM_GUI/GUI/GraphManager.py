@@ -12,15 +12,29 @@ class GraphManager:
         self.parent.current_receiver = next(
             (receiver for receiver in self.parent.receiver_list if receiver.type == selected_type), None
         )
+
+
+    def calculate_variables(self):
         if self.parent.current_receiver:
-            self.calculate_radiance()
+            wavelength = float(self.parent.ui.TargetWave.text())
+            temperature = float(self.parent.ui.TargetTemp.text())
+
+            radiance = self.graph_calculator.y(wavelength, temperature)
+            formatted_radiance = "{:.3f}".format(radiance)
+            # Calculate other variables here
+            # variable1 = ...
+            # variable2 = ...
+            # ...
+
+            # Update the UI with the calculated variables
+            self.parent.ui.FluxValueOut.setText(str(formatted_radiance))
+            # Update other UI elements with the calculated variables
+            # self.parent.ui.Variable1Label.setText(str(variable1))
+            # self.parent.ui.Variable2Label.setText(str(variable2))
+            # ...
 
     def calculate_radiance(self):
-        wavelength = float(self.parent.ui.TargetWave.text())
-        temperature = float(self.parent.ui.TargetTemp.text())
-        radiance = self.graph_calculator.y(wavelength, temperature)
-        formatted_radiance = "{:.3f}".format(radiance)
-        self.parent.ui.FluxValueOut.setText(str(formatted_radiance))
+        self.calculate_variables()
 
     def display_selected_plot(self):
         selected_plot = self.parent.ui.PlotBox.currentText()
