@@ -1,6 +1,6 @@
 # Constructor Pattern
 class Receiver:
-    def __init__(self, type_, diag, diameter, resist, darkness, coef_amp, length, dark_prov, width, size, delta, power):
+    def __init__(self, type_, diag, diameter, resist, darkness, coef_amp, length, dark_prov, width, size, delta, power, focus):
         self.type = type_
         self.diag = diag
         self.diameter = diameter
@@ -13,4 +13,9 @@ class Receiver:
         self.size = size
         self.delta = delta
         self.power = power
+        self.focus = focus
+
+
+
+
 

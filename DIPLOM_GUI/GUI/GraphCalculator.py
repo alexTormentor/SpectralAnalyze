@@ -42,3 +42,19 @@ class GraphCalculator:
         M = c1 * lamda ** -5 * denominator ** -1
 
         return M
+
+    @staticmethod
+    def trapezoidalFunction(points, xrange):
+        values = []
+        for x in xrange:
+            if x <= points['a']:
+                values.append(0)
+            elif (x >= points['a'] and x <= points['b']):
+                values.append((x - points['a']) / (points['b'] - points['a']))
+            elif x >= points['b'] and x <= points['c']:
+                values.append(1)
+            elif (x >= points['c'] and x <= points['d']):
+                values.append((points['d'] - x) / (points['d'] - points['c']))
+            elif x >= points['d']:
+                values.append(0)
+        return values

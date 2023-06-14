@@ -61,6 +61,8 @@ class Spectra(QtWidgets.QMainWindow):
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot3))
             elif plot_type == 'график4':
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot4))
+            elif plot_type == 'график5':
+                self.plot_list.append(PlotData(plot_type, self.graph_manager.plot5))
 
     def populate_material_list(self):
         db_manager = DatabaseManager('../DIPLOM.db')

@@ -15,7 +15,7 @@ class DatabaseManager:
         return data
 
     def fetch_receiver_data(self):
-        query = "SELECT Type, Diaphr, Diameter, Resist, DarkResist, CoeffAmpl, Length, DarkProv, Width, SizePh, Delta, Power FROM Receiver"
+        query = "SELECT Type, Diaphr, Diameter, Resist, DarkResist, CoeffAmpl, Length, DarkProv, Width, SizePh, Delta, Power, focus FROM Receiver"
         return self.execute_query(query)
 
     def fetch_plot_data(self):
