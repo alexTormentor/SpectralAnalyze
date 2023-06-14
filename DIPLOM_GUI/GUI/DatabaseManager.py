@@ -22,3 +22,8 @@ class DatabaseManager:
         query = "SELECT type FROM Plots"
         return self.execute_query(query)
 
+    def fetch_material_data(self):
+
+        query = "SELECT Material FROM Materials"
+        return self.execute_query(query)
+

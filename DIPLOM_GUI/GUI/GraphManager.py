@@ -107,7 +107,7 @@ class GraphManager:
 
         # Retrieve selected receiver and material
         selected_receiver = self.parent.ui.ReceiverBox.currentText()
-        selected_material = "Силикатное стекло"
+        selected_material = self.parent.ui.MaterialBox.currentText()
 
         # Fetch sensitivity values for the selected receiver
         db_manager = DatabaseManager('../DIPLOM.db')

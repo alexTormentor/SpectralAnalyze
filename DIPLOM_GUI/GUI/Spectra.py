@@ -14,6 +14,7 @@ class Spectra(QtWidgets.QMainWindow):
         self.threadpool = QtCore.QThreadPool()
         self.receiver_list = []
         self.plot_list = []
+        self.material_list = []
         self.current_receiver = None
 
         self.graph_manager = GraphManager(self)
@@ -22,6 +23,8 @@ class Spectra(QtWidgets.QMainWindow):
         self.update_receiver_combo_box()
         self.populate_plot_list()
         self.update_plot_combo_box()
+        self.populate_material_list()  # Added method call
+        self.update_material_combo_box()  # Added method call
 
         self.ui.ReceiverBox.currentTextChanged.connect(self.graph_manager.update_receiver_fields)
         self.ui.PlotGraph.clicked.connect(self.graph_manager.display_selected_plot)
@@ -58,3 +61,15 @@ class Spectra(QtWidgets.QMainWindow):
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot3))
             elif plot_type == 'график4':
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot4))
+
+    def populate_material_list(self):
+        db_manager = DatabaseManager('../DIPLOM.db')
+        material_data = db_manager.fetch_material_data()  # Assuming there's a method to fetch material data
+        for row in material_data:
+            material = row[0]
+            self.material_list.append(material)
+
+    def update_material_combo_box(self):
+        self.ui.MaterialBox.clear()
+        for material in self.material_list:
+            self.ui.MaterialBox.addItem(material)
