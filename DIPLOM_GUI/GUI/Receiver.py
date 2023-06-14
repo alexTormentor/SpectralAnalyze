@@ -13,3 +13,4 @@ class Receiver:
         self.size = size
         self.delta = delta
         self.power = power
+

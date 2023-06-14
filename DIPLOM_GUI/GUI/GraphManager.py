@@ -1,6 +1,7 @@
-from Modules import np
+from Modules import np, scipy, QtCore
 from GraphContainer import GraphContainer
 from GraphCalculator import GraphCalculator
+from DatabaseManager import DatabaseManager
 
 # Constructor Pattern
 # Singleton Pattern
@@ -47,6 +48,8 @@ class GraphManager:
             self.graph_container.update_plot(self.plot2)
         elif selected_plot == "график3":
             self.graph_container.update_plot(self.plot3)
+        elif selected_plot == "график4":
+            self.graph_container.update_plot(self.plot4)
         self.graph_container.plot_button_pressed = True
 
     def plot1(self, fig):
@@ -98,4 +101,53 @@ class GraphManager:
         ax.set_title('Спектральная плотность энергетической светимости абсолютно черного тела')
         ax.grid(True)
         ax.legend()
+
+    def plot4(self, fig):
+        wav_range = np.linspace(float(self.parent.ui.WaveStart.text()), float(self.parent.ui.WaveEnd.text()), 1000)
+
+        # Retrieve selected receiver and material
+        selected_receiver = self.parent.ui.ReceiverBox.currentText()
+        selected_material = "Силикатное стекло"
+
+        # Fetch sensitivity values for the selected receiver
+        db_manager = DatabaseManager('../DIPLOM.db')
+        query = f"SELECT Sensitivity FROM Receiver WHERE Type = '{selected_receiver}'"
+        sensitivity_data = db_manager.execute_query(query)
+        sensitivity_values = list(map(float, sensitivity_data[0][0].split(',')))
+
+        # Fetch transmission values for the selected material
+        query = f"SELECT Transmission FROM Materials WHERE Material = '{selected_material}'"
+        transmission_data = db_manager.execute_query(query)
+        transmission_values = list(map(float, transmission_data[0][0].split(',')))
+
+        # Perform calculations and plotting
+        trans_values = np.interp(wav_range, np.linspace(float(self.parent.ui.WaveStart.text()), float(self.parent.ui.WaveEnd.text()), len(transmission_values)), transmission_values)
+        smoothed_trans_values = scipy.ndimage.gaussian_filter1d(trans_values, sigma=20)
+
+        s_values = np.interp(wav_range, np.linspace(float(self.parent.ui.WaveStart.text()), float(self.parent.ui.WaveEnd.text()), len(sensitivity_values)), sensitivity_values)
+        smoothed_s_values = scipy.ndimage.gaussian_filter1d(s_values, sigma=20)
+
+        ax = fig.add_subplot(111)
+        norm1 = smoothed_trans_values / np.max(smoothed_trans_values)
+        norm3 = smoothed_s_values / np.max(smoothed_s_values)
+
+        ax.plot(wav_range * 1e6, self.graph_calculator.y(wav_range, float(self.parent.ui.TargetTemp.text())), label='y(λ, T)')
+        ax.plot(wav_range * 1e6, norm1, label='τ(λ)')
+        ax.plot(wav_range * 1e6, norm3, label='s(λ)')
+
+        ax.fill_between(wav_range * 1e6, np.minimum(self.graph_calculator.y(wav_range, float(self.parent.ui.TargetTemp.text())), norm1), color='gray',
+                        alpha=0.3)
+        ax.fill_between(wav_range * 1e6, np.minimum(self.graph_calculator.y(wav_range, float(self.parent.ui.TargetTemp.text())), norm3), color='black',
+                        alpha=0.3)
+
+        ax.set_xlabel('λ')
+        ax.set_ylabel('нормализованное значение')
+        ax.set_title('Спектральная характеристика')
+        ax.legend()
+
+        return fig
+
+
+
+
 

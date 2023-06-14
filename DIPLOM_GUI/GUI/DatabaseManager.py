@@ -21,3 +21,4 @@ class DatabaseManager:
     def fetch_plot_data(self):
         query = "SELECT type FROM Plots"
         return self.execute_query(query)
+

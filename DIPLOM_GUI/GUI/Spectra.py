@@ -56,3 +56,5 @@ class Spectra(QtWidgets.QMainWindow):
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot2))
             elif plot_type == 'график3':
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot3))
+            elif plot_type == 'график4':
+                self.plot_list.append(PlotData(plot_type, self.graph_manager.plot4))
