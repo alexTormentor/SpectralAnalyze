@@ -91,19 +91,22 @@ class GraphManager:
             a = self.q / 4
             b = self.D / self.f
             s_max = np.max(s_values)
+            Integral_Range1 = float(self.parent.ui.IntStart.text())  # Lower limit of the integral
+            Integral_Range2 = float(self.parent.ui.IntEnd.text())  # Upper limit of the integral
+            Int_range = np.logical_and(wav_range >= Integral_Range1, wav_range <= Integral_Range2)
+            lambda_range = np.logical_and(wav_range >= lambda_1, wav_range <= lambda_2)
 
 
             # Calculate other variables here
             integrand = trans_values * self.graph_calculator.spectral_density(wav_range, temperature)
-            lambda_range = np.logical_and(wav_range >= lambda_1, wav_range <= lambda_2)
-            selected_integrand = integrand[lambda_range]
-            integral_value = simps(selected_integrand, wav_range[lambda_range])
+            selected_integrand = integrand[Int_range]
+            integral_value = simps(selected_integrand, wav_range[Int_range])
             result = a * b**2 * integral_value
             formatted_result = "{:.5f}".format(result)
 
             integrand2 = s_values * trans_values * self.graph_calculator.spectral_density(wav_range, temperature)
-            selected_integrand2 = integrand2[lambda_range]
-            integral_value2 = simps(selected_integrand2, wav_range[lambda_range])
+            selected_integrand2 = integrand2[Int_range]
+            integral_value2 = simps(selected_integrand2, wav_range[Int_range])
             result2 = a * b**2 * ((s_max * self.R_H * self.R_i * self.R_amp) / (self.R_H + self.R_i)) * integral_value2
             formatted_result2 = "{:.5f}".format(result2)
 
@@ -117,6 +120,31 @@ class GraphManager:
             formatted_monochrome = "{:.5f}".format(monochrome)
 
 
+            integrand3 = s_values * integrand
+            selected_integrand3 = integrand3[lambda_range]
+            integral_value3 = simps(selected_integrand3, wav_range[lambda_range])
+            integrand3_2 = integrand
+            selected_integrand3_2 = integrand3_2[lambda_range]
+            integral_value3_2 = simps(selected_integrand3_2, wav_range[lambda_range])
+            KPD1 = integral_value3 / integral_value3_2
+            formatted_KPD1 = "{:.5f}".format(KPD1)
+
+
+            integrand4 = s_values * trans_values * self.graph_calculator.y(wav_range, temperature)
+            selected_integrand4 = integrand4[lambda_range]
+            integral_value4 = simps(selected_integrand4, wav_range[lambda_range])
+            integrand4_2 = s_values * self.graph_calculator.y(wav_range, temperature)
+            selected_integrand4_2 = integrand4_2[lambda_range]
+            integral_value4_2 = simps(selected_integrand4_2, wav_range[lambda_range])
+            KPD2 = integral_value4 / integral_value4_2
+            formatted_KPD2 = "{:.5f}".format(KPD2)
+
+
+
+
+
+
+
             # variable1 = ...
             # variable2 = ...
             # ...
@@ -128,6 +156,8 @@ class GraphManager:
             self.parent.ui.FluxOut.setText(str(formatted_If2))
             self.parent.ui.SummaryCurrent.setText(str(formatted_SumCur))
             self.parent.ui.Monochromatic.setText(str(formatted_monochrome))
+            self.parent.ui.KPDPreobr.setText(str(formatted_KPD1))
+            self.parent.ui.KPDRceiver.setText(str(formatted_KPD2))
             # self.parent.ui.Variable1Label.setText(str(variable1))
             # self.parent.ui.Variable2Label.setText(str(variable2))
             # ...
