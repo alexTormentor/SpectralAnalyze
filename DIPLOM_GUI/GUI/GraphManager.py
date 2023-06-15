@@ -1,4 +1,4 @@
-from Modules import np, scipy, QtCore, trapz
+from Modules import np, scipy, QtCore, trapz, simps
 from GraphContainer import GraphContainer
 from GraphCalculator import GraphCalculator
 from DatabaseManager import DatabaseManager
@@ -12,12 +12,49 @@ class GraphManager:
         self.parent = parent
         self.graph_calculator = GraphCalculator()
         self.graph_container = GraphContainer(self.parent)
-        self.q = None
+        self.q = 0
+        self.D = 0
+        self.f = 0
+        self.R_H = 0
+        self.R_i = 0
+        self.R_amp = 0
+        self.d = 0
+        self.H = 0
+        self.l = 0
+        self.delta = 0
+        self.V = 0
+        self.prov = 0
 
     def update_receiver_fields(self, selected_type):
         self.parent.current_receiver = next(
             (receiver for receiver in self.parent.receiver_list if receiver.type == selected_type), None
         )
+        if self.parent.current_receiver:
+            self.q = float(self.parent.current_receiver.diag)
+            self.D = float(self.parent.current_receiver.diameter)
+            self.f = float(self.parent.current_receiver.focus)
+            self.R_H = float(self.parent.current_receiver.resist)
+            self.R_i = float(self.parent.current_receiver.darkness)
+            self.R_amp = float(self.parent.current_receiver.coef_amp)
+            self.d = float(self.parent.current_receiver.width)
+            self.H = float(self.parent.current_receiver.size)
+            self.l = float(self.parent.current_receiver.length)
+            self.delta = float(self.parent.current_receiver.delta)
+            self.V = float(self.parent.current_receiver.power)
+            self.prov = float(self.parent.current_receiver.darkprov)
+        else:
+            self.q = 0
+            self.D = 0
+            self.f = 0
+            self.R_H = 0
+            self.R_i = 0
+            self.R_amp = 0
+            self.d = 0
+            self.H = 0
+            self.l = 0
+            self.delta = 0
+            self.V = 0
+            self.prov = 0
 
 
     def calculate_variables(self):
@@ -48,23 +85,38 @@ class GraphManager:
                                                             len(transmission_values)), transmission_values)
 
             s_values = np.interp(wav_range, np.linspace(float(self.parent.ui.WaveStart.text()),
-                                                        float(self.parent.ui.WaveEnd.text()), len(sensitivity_values)),
-                                 sensitivity_values)
+                                                        float(self.parent.ui.WaveEnd.text()),
+                                                        len(sensitivity_values)), sensitivity_values)
+
+            a = self.q / 4
+            b = self.D / self.f
+            s_max = np.max(s_values)
 
 
-            query = f"SELECT Sensitivity FROM Receiver WHERE Type = '{selected_receiver}'"
-            sensitivity_data = db_manager.execute_query(query)
-            sensitivity_values = list(map(float, sensitivity_data[0][0].split(',')))
-
-
-
-            radiance = self.graph_calculator.y(wavelength, temperature)
-            formatted_radiance = "{:.3f}".format(radiance)
             # Calculate other variables here
             integrand = trans_values * self.graph_calculator.spectral_density(wav_range, temperature)
-            integral = trapz(integrand, x=wav_range, dx=wav_range, axis=0)
-            result = integral * (lambda_2 - lambda_1)
-            formatted_result = "{:.5e}".format(result)
+            lambda_range = np.logical_and(wav_range >= lambda_1, wav_range <= lambda_2)
+            selected_integrand = integrand[lambda_range]
+            integral_value = simps(selected_integrand, wav_range[lambda_range])
+            result = a * b**2 * integral_value
+            formatted_result = "{:.5f}".format(result)
+
+            integrand2 = s_values * trans_values * self.graph_calculator.spectral_density(wav_range, temperature)
+            selected_integrand2 = integrand2[lambda_range]
+            integral_value2 = simps(selected_integrand2, wav_range[lambda_range])
+            result2 = a * b**2 * ((s_max * self.R_H * self.R_i * self.R_amp) / (self.R_H + self.R_i)) * integral_value2
+            formatted_result2 = "{:.5f}".format(result2)
+
+            IF2 = self.delta * ((self.d * self.H) / self.l) * self.V
+            formatted_If2 = "{:.5f}".format(IF2)
+
+            summaryCurrent = IF2 + self.prov
+            formatted_SumCur = "{:.5f}".format(summaryCurrent)
+
+            monochrome = IF2 / result
+            formatted_monochrome = "{:.5f}".format(monochrome)
+
+
             # variable1 = ...
             # variable2 = ...
             # ...
@@ -72,6 +124,10 @@ class GraphManager:
             # Update the UI with the calculated variables
             # Update other UI elements with the calculated variables
             self.parent.ui.FluxValueOut.setText(str(formatted_result))
+            self.parent.ui.PowerOut.setText(str(formatted_result2))
+            self.parent.ui.FluxOut.setText(str(formatted_If2))
+            self.parent.ui.SummaryCurrent.setText(str(formatted_SumCur))
+            self.parent.ui.Monochromatic.setText(str(formatted_monochrome))
             # self.parent.ui.Variable1Label.setText(str(variable1))
             # self.parent.ui.Variable2Label.setText(str(variable2))
             # ...
