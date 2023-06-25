@@ -2,7 +2,6 @@ from Modules import np, scipy, QtCore, trapz, simps
 from GraphContainer import GraphContainer
 from GraphCalculator import GraphCalculator
 from DatabaseManager import DatabaseManager
-from Receiver import Receiver
 
 # Constructor Pattern
 # Singleton Pattern
@@ -56,7 +55,6 @@ class GraphManager:
             self.V = 0
             self.prov = 0
 
-
     def calculate_variables(self):
         if self.parent.current_receiver:
             wavelength = float(self.parent.ui.TargetWave.text())
@@ -96,8 +94,6 @@ class GraphManager:
             Int_range = np.logical_and(wav_range >= Integral_Range1, wav_range <= Integral_Range2)
             lambda_range = np.logical_and(wav_range >= lambda_1, wav_range <= lambda_2)
 
-
-            # Calculate other variables here
             integrand = trans_values * self.graph_calculator.spectral_density(wav_range, temperature)
             selected_integrand = integrand[Int_range]
             integral_value = simps(selected_integrand, wav_range[Int_range])
@@ -119,7 +115,6 @@ class GraphManager:
             monochrome = IF2 / result
             formatted_monochrome = "{:.5f}".format(monochrome)
 
-
             integrand3 = s_values * integrand
             selected_integrand3 = integrand3[lambda_range]
             integral_value3 = simps(selected_integrand3, wav_range[lambda_range])
@@ -128,7 +123,6 @@ class GraphManager:
             integral_value3_2 = simps(selected_integrand3_2, wav_range[lambda_range])
             KPD1 = integral_value3 / integral_value3_2
             formatted_KPD1 = "{:.5f}".format(KPD1)
-
 
             integrand4 = s_values * trans_values * self.graph_calculator.y(wav_range, temperature)
             selected_integrand4 = integrand4[lambda_range]
@@ -139,18 +133,6 @@ class GraphManager:
             KPD2 = integral_value4 / integral_value4_2
             formatted_KPD2 = "{:.5f}".format(KPD2)
 
-
-
-
-
-
-
-            # variable1 = ...
-            # variable2 = ...
-            # ...
-
-            # Update the UI with the calculated variables
-            # Update other UI elements with the calculated variables
             self.parent.ui.FluxValueOut.setText(str(formatted_result))
             self.parent.ui.PowerOut.setText(str(formatted_result2))
             self.parent.ui.FluxOut.setText(str(formatted_If2))
@@ -158,9 +140,6 @@ class GraphManager:
             self.parent.ui.Monochromatic.setText(str(formatted_monochrome))
             self.parent.ui.KPDPreobr.setText(str(formatted_KPD1))
             self.parent.ui.KPDRceiver.setText(str(formatted_KPD2))
-            # self.parent.ui.Variable1Label.setText(str(variable1))
-            # self.parent.ui.Variable2Label.setText(str(variable2))
-            # ...
 
     def calculate_radiance(self):
         self.calculate_variables()
@@ -173,9 +152,9 @@ class GraphManager:
             self.graph_container.update_plot(self.plot2)
         elif selected_plot == "график3":
             self.graph_container.update_plot(self.plot3)
-        elif selected_plot == "график4":
+        elif selected_plot == "Совместимость":
             self.graph_container.update_plot(self.plot4)
-        elif selected_plot == "график5":
+        elif selected_plot == "Метод трапеций":
             self.graph_container.update_plot(self.plot5)
         self.graph_container.plot_button_pressed = True
 
@@ -274,7 +253,6 @@ class GraphManager:
 
         return fig
 
-
     def plot5(self, fig):
         ax = fig.add_subplot(111)
 
@@ -331,9 +309,6 @@ class GraphManager:
                         alpha=0.3)
         ax.fill_between(wav_range * 1e6, np.minimum(membership_values_y, membership_values_norma), color='black',
                         alpha=0.3)
-        ax.fill_between(wav_range * 1e6, np.minimum(membership_values_y, np.minimum(membership_values_transmission,
-                                                                                    membership_values_norma)),
-                        color='gray', alpha=0.3)
 
         ax.set_xlabel('λ')
         ax.set_ylabel('')

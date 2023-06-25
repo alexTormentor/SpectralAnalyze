@@ -59,9 +59,9 @@ class Spectra(QtWidgets.QMainWindow):
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot2))
             elif plot_type == 'график3':
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot3))
-            elif plot_type == 'график4':
+            elif plot_type == 'Совместимость':
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot4))
-            elif plot_type == 'график5':
+            elif plot_type == 'Метод трапеций':
                 self.plot_list.append(PlotData(plot_type, self.graph_manager.plot5))
 
     def populate_material_list(self):
